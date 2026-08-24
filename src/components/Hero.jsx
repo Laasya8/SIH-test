@@ -49,7 +49,7 @@ export default function Hero({ onExplore }) {
     <section className="hero-section" id="home">
       <div className="container hero-content">
         <div className="hero-eyebrow">
-          <i className="fa-solid fa-graduation-cap"></i>
+          <i></i>
           CSI VNRVJIET PRESENTS
         </div>
 

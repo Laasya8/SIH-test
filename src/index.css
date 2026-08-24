@@ -346,7 +346,8 @@ body::before {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.8px;
-  color: var(--blue-light);
+  /* color: var(--blue-light); */
+  color: white;
   text-transform: uppercase;
   margin-bottom: 24px;
 }
@@ -375,7 +376,9 @@ body::before {
 }
 
 /* Old .hero-stats replaced — see .hero-stats-row below */
-.hero-stats { display: none; }
+.hero-stats {
+  display: none;
+}
 
 /* Inline ticker-style stats */
 .hero-stats-row {
@@ -392,8 +395,13 @@ body::before {
   padding: 0 28px;
 }
 
-.hstat:first-child { padding-left: 0; }
-.hstat:last-child  { padding-right: 0; }
+.hstat:first-child {
+  padding-left: 0;
+}
+
+.hstat:last-child {
+  padding-right: 0;
+}
 
 .hstat-num {
   font-family: 'Space Grotesk', sans-serif;
@@ -427,7 +435,11 @@ body::before {
 }
 
 /* keep old stat-num/stat-lbl/stat-cell hidden — no longer used */
-.stat-cell, .stat-num, .stat-lbl { display: none; }
+.stat-cell,
+.stat-num,
+.stat-lbl {
+  display: none;
+}
 
 .stat-num .slash {
   color: var(--blue-light);
@@ -817,10 +829,15 @@ body::before {
 }
 
 @media (max-width: 1024px) {
-  .ps-grid { grid-template-columns: repeat(2, 1fr); }
+  .ps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
+
 @media (max-width: 640px) {
-  .ps-grid { grid-template-columns: 1fr; }
+  .ps-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .ps-card {
@@ -915,7 +932,12 @@ body::before {
   line-height: 1.4;
 }
 
-.card-org i { font-size: 11px; margin-top: 2px; flex-shrink: 0; }
+.card-org i {
+  font-size: 11px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
 .card-org span {
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -945,7 +967,10 @@ body::before {
   text-overflow: ellipsis;
 }
 
-.card-theme-pill i { font-size: 10px; color: var(--txt-3); }
+.card-theme-pill i {
+  font-size: 10px;
+  color: var(--txt-3);
+}
 
 /* — Tier pills — */
 .card-tier-row {
@@ -1017,9 +1042,14 @@ body::before {
   color: var(--txt-3);
 }
 
-.card-foot .soon { color: #f87171; font-weight: 700; }
+.card-foot .soon {
+  color: #f87171;
+  font-weight: 700;
+}
 
-.ideas-snap { cursor: help; }
+.ideas-snap {
+  cursor: help;
+}
 
 /* Empty State */
 .empty-state {
@@ -1035,9 +1065,14 @@ body::before {
   display: block;
 }
 
-.empty-state p { font-size: 15px; color: var(--txt-2); }
+.empty-state p {
+  font-size: 15px;
+  color: var(--txt-2);
+}
 
-.load-more { text-align: center; }
+.load-more {
+  text-align: center;
+}
 
 
 
