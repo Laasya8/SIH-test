@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
 const VERDICT_EMOJI  = { GREEN: '🟢', YELLOW: '🟡', RED: '🔴' };
-const VERDICT_LABEL  = { GREEN: 'Strong Pick', YELLOW: 'Workable', RED: 'High Risk' };
+const VERDICT_LABEL  = { GREEN: 'Strong Pick', YELLOW: 'Workable Pick', RED: 'High Risk' };
 
 const TABS = [
-  { id: 'overview',  label: 'Overview' },
-  { id: 'analysis',  label: 'Analysis' },
-  { id: 'evaluator', label: 'Evaluator Lens' },
-  { id: 'plan',      label: '36-Hr Plan' }
+  { id: 'overview',  label: 'Problem Snapshot', icon: 'fa-compass' },
+  { id: 'analysis',  label: 'Technical Breakdown', icon: 'fa-microchip' },
+  { id: 'evaluator', label: "Judge's Perspective & Prep", icon: 'fa-shield-halved' },
+  { id: 'plan',      label: '36-Hour Build Plan', icon: 'fa-stopwatch' }
 ];
 
 const SC_ORDER  = ['innovation','invention','technical_feasibility','impact_benefits','architecture'];
-const SC_PREFIX = { innovation:'tp', invention:'tp', technical_feasibility:'tp', impact_benefits:'tp', architecture:'tp' };
 
 function daysUntil(d) {
   if (!d) return null;
@@ -34,7 +33,7 @@ export default function DetailModal({ ps, onClose }) {
 
   if (!ps) return null;
 
-  const verdict  = ps.verdict || { tier: 'YELLOW' };
+  const verdict  = ps.verdict || { tier: 'GREEN' };
   const catIcon  = ps.category === 'Hardware' ? 'microchip' : 'code';
   const days     = daysUntil(ps.deadline_date);
   const soon     = days !== null && days <= 14 && days >= 0;
@@ -50,254 +49,339 @@ export default function DetailModal({ ps, onClose }) {
   const qs       = ps.evaluator_questions || [];
   const plan     = ps.build_plan_36h || {};
 
-  const vcClass  = verdict.tier === 'GREEN' ? 'vc-green' : verdict.tier === 'RED' ? 'vc-red' : 'vc-yellow';
-  const vbClass  = verdict.tier.toLowerCase();
+  const vbClass  = (verdict.tier || 'GREEN').toLowerCase();
 
   return (
     <div
-      className="overlay open"
+      className="modal-overlay open"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="panel" role="dialog" aria-modal="true" aria-label="Problem statement details">
-        <button className="panel-close" onClick={onClose} aria-label="Close">×</button>
+      <div className="modal-dialog" role="dialog" aria-modal="true" aria-label="Problem statement details">
+        {/* Floating Close Button */}
+        <button className="modal-close-btn" onClick={onClose} aria-label="Close dialog">
+          <i className="fa-solid fa-xmark"></i>
+        </button>
 
-        {/* Sticky header */}
-        <div className="panel-head">
-          <div className="panel-badges">
-            <span className="panel-ps-id">{ps.ps_number}</span>
-            <span className={`verdict-badge verdict-${vbClass}`}>
-              {VERDICT_EMOJI[verdict.tier]} {verdict.tier} · {VERDICT_LABEL[verdict.tier]}
+        {/* Modal Header */}
+        <div className="modal-header">
+          <div className="modal-eyebrow">
+            <span className="modal-ps-badge">
+              <i className="fa-solid fa-hashtag"></i> {ps.ps_number}
+            </span>
+            <span className={`modal-verdict-pill verdict-${vbClass}`}>
+              {VERDICT_EMOJI[verdict.tier]} {VERDICT_LABEL[verdict.tier] || verdict.tier}
+            </span>
+            <span className="modal-csi-badge">
+              <i className="fa-solid fa-award"></i> CSI Mentorship Analysis
             </span>
           </div>
 
-          <h2 className="panel-title">{ps.title}</h2>
+          <h2 className="modal-title">{ps.title}</h2>
 
-          <div className="panel-meta">
-            <span className="p-chip"><i className="fa-solid fa-building-columns"></i> {ps.org}</span>
-            <span className="p-chip"><i className={`fa-solid fa-${catIcon}`}></i> {ps.category}</span>
-            <span className="p-chip"><i className="fa-solid fa-tag"></i> {ps.theme}</span>
-          </div>
-          <div className="panel-stats">
-            <span className={soon ? 'soon' : ''}>
-              <i className="fa-solid fa-calendar"></i> Deadline: {ps.deadline || 'TBA'}
-            </span>
-            <span title="Snapshot data — SIH has no public API for live counts">
-              <i className="fa-solid fa-chart-simple"></i> Ideas: {ps.ideas || 'N/A'}
-              <i className="fa-solid fa-circle-info snap-ico" style={{marginLeft:'4px'}}></i>
-            </span>
+          <div className="modal-meta-row">
+            <div className="modal-meta-pill">
+              <i className="fa-solid fa-building-columns"></i>
+              <span>{ps.org}</span>
+            </div>
+            <div className="modal-meta-pill">
+              <i className={`fa-solid fa-${catIcon}`}></i>
+              <span>{ps.category}</span>
+            </div>
+            <div className="modal-meta-pill">
+              <i className="fa-solid fa-tag"></i>
+              <span>{ps.theme}</span>
+            </div>
+            <div className={`modal-meta-pill ${soon ? 'soon' : ''}`}>
+              <i className="fa-solid fa-calendar-check"></i>
+              <span>Deadline: {ps.deadline || 'TBA'}</span>
+            </div>
           </div>
 
-          <div className="tab-bar">
+          {/* Segmented Tab Navigation */}
+          <div className="modal-tabs">
             {TABS.map(t => (
               <button
                 key={t.id}
                 type="button"
-                className={`tab-btn ${tab === t.id ? 'active' : ''}`}
+                className={`modal-tab-btn ${tab === t.id ? 'active' : ''}`}
                 onClick={() => setTab(t.id)}
               >
-                {t.label}
+                <i className={`fa-solid ${t.icon}`}></i>
+                <span>{t.label}</span>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Body */}
-        <div className="panel-body">
+        {/* Modal Scrollable Body */}
+        <div className="modal-body">
 
-          {/* ── OVERVIEW ── */}
+          {/* ── TAB 1: OVERVIEW ── */}
           {tab === 'overview' && (
-            <>
+            <div className="modal-section-grid">
               {pd.plain_summary && (
-                <>
-                  <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-align-left"></i></span> In Plain Terms</div>
-                  <div className="p-box accent">{pd.plain_summary}</div>
-                </>
+                <div className="m-card m-card-accent">
+                  <div className="m-card-header">
+                    <i className="fa-solid fa-lightbulb"></i>
+                    <h3>Executive Summary (In Plain Terms)</h3>
+                  </div>
+                  <p className="m-card-lead">{pd.plain_summary}</p>
+                </div>
               )}
 
               {pd.why_it_matters && (
-                <div className="p-box warn">
-                  <i className="fa-solid fa-lightbulb"></i>
-                  <span><strong>Why it matters: </strong>{pd.why_it_matters}</span>
+                <div className="m-card m-card-highlight">
+                  <div className="m-card-header">
+                    <i className="fa-solid fa-star"></i>
+                    <h3>Strategic Impact &amp; Why It Matters</h3>
+                  </div>
+                  <p>{pd.why_it_matters}</p>
                 </div>
               )}
 
               {pains.length > 0 && (
-                <>
-                  <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-triangle-exclamation"></i></span> Core Pain Points</div>
-                  <ul className="p-pain-list">
+                <div className="m-card">
+                  <div className="m-card-header text-danger">
+                    <i className="fa-solid fa-triangle-exclamation"></i>
+                    <h3>Critical Operational Pain Points</h3>
+                  </div>
+                  <ul className="m-danger-list">
                     {pains.map((p, i) => (
-                      <li key={i}><i className="fa-solid fa-circle-exclamation"></i><span>{p}</span></li>
+                      <li key={i}>
+                        <i className="fa-solid fa-circle-xmark"></i>
+                        <span>{p}</span>
+                      </li>
                     ))}
                   </ul>
-                </>
+                </div>
               )}
 
               {ps.background && (
-                <>
-                  <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-book-open"></i></span> Background</div>
-                  <div className="p-box">{ps.background}</div>
-                </>
+                <div className="m-card">
+                  <div className="m-card-header">
+                    <i className="fa-solid fa-book-open"></i>
+                    <h3>Background &amp; Regional Context</h3>
+                  </div>
+                  <p className="m-card-text">{ps.background}</p>
+                </div>
               )}
 
               {ps.description && (
-                <>
-                  <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-list-check"></i></span> What They're Asking For</div>
-                  <div className="p-box">{ps.description}</div>
-                </>
+                <div className="m-card">
+                  <div className="m-card-header">
+                    <i className="fa-solid fa-list-check"></i>
+                    <h3>Official Ministerial Scope</h3>
+                  </div>
+                  <p className="m-card-text">{ps.description}</p>
+                </div>
               )}
 
-              <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-circle-check"></i></span> Expected Solution Highlights</div>
-              {bullets.length > 0 ? (
-                <ul className="p-list">
-                  {bullets.map((b, i) => (
-                    <li key={i}><i className="fa-solid fa-check"></i><span>{b}</span></li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="p-empty">Full breakdown available at sih.gov.in</p>
-              )}
-            </>
+              <div className="m-card m-card-success">
+                <div className="m-card-header text-success">
+                  <i className="fa-solid fa-circle-check"></i>
+                  <h3>Mandatory Deliverables &amp; Expected Features</h3>
+                </div>
+                {bullets.length > 0 ? (
+                  <ul className="m-check-list">
+                    {bullets.map((b, i) => (
+                      <li key={i}>
+                        <i className="fa-solid fa-check"></i>
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-muted">Refer to sih.gov.in for full specification.</p>
+                )}
+              </div>
+            </div>
           )}
 
-          {/* ── ANALYSIS ── */}
+          {/* ── TAB 2: TECHNICAL ANALYSIS ── */}
           {tab === 'analysis' && (
-            <>
-              <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-wand-magic-sparkles"></i></span> Innovation Scope</div>
-              <div className="p-callout">
-                <span className={`tier-pill tp-${innov.tier.toLowerCase()}`}>{innov.tier}</span>
-                <p>{innov.reason}</p>
-              </div>
+            <div className="modal-section-grid">
+              <div className="m-two-col">
+                <div className="m-card">
+                  <div className="m-card-header">
+                    <i className="fa-solid fa-wand-magic-sparkles"></i>
+                    <h3>Innovation Potential</h3>
+                  </div>
+                  <div className="m-badge-row">
+                    <span className={`tier-pill tp-${innov.tier.toLowerCase()}`}>{innov.tier}</span>
+                  </div>
+                  <p className="m-card-text" style={{ marginTop: '8px' }}>{innov.reason}</p>
+                </div>
 
-              <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-gears"></i></span> Invention Effort</div>
-              <div className="p-callout">
-                <span className={`tier-pill tp-${effort.tier.toLowerCase()}`}>{effort.tier}</span>
-                <div>
-                  <p>Scored from distinct component asks and integration complexity.</p>
-                  <p style={{ fontSize: '12px', color: 'var(--txt-3)', marginTop: '4px' }}>
-                    Effort score: <strong style={{ color: 'var(--txt-2)' }}>{effort.score || 0}</strong>
+                <div className="m-card">
+                  <div className="m-card-header">
+                    <i className="fa-solid fa-gears"></i>
+                    <h3>Engineering Complexity</h3>
+                  </div>
+                  <div className="m-badge-row">
+                    <span className={`tier-pill tp-${effort.tier.toLowerCase()}`}>{effort.tier} Effort</span>
+                    <span className="m-score-tag">Score: <strong>{effort.score || 0}/15</strong></span>
+                  </div>
+                  <p className="m-card-text" style={{ marginTop: '8px' }}>
+                    Multi-tier component architecture requiring structured API contracts and automated data ingest.
                   </p>
                 </div>
               </div>
 
-              <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-chart-line"></i></span> Competitive Landscape</div>
-              <div className="p-callout">
-                <span className={`tier-pill tp-${(cl.tier||'medium').toLowerCase()}`}>{cl.tier || 'Medium'} Crowding</span>
-                <p>{cl.reason || '—'}</p>
-              </div>
-              {cl.common_approaches && (
-                <div className="p-box"><strong>What most teams build: </strong>{cl.common_approaches}</div>
-              )}
-              {cl.differentiation_angle && (
-                <div className="p-box" style={{ background: 'rgba(34,197,94,0.08)', borderColor: 'rgba(34,197,94,0.18)', color: '#86efac' }}>
-                  <strong>How to stand out: </strong>{cl.differentiation_angle}
+              <div className="m-card m-card-accent">
+                <div className="m-card-header">
+                  <i className="fa-solid fa-chart-line"></i>
+                  <h3>Competitive Landscape &amp; Crowding</h3>
                 </div>
-              )}
+                <div className="m-badge-row" style={{ marginBottom: '8px' }}>
+                  <span className={`tier-pill tp-${(cl.tier||'medium').toLowerCase()}`}>{cl.tier || 'Medium'} Crowding</span>
+                </div>
+                <p className="m-card-text">{cl.reason || '—'}</p>
 
-              <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-table-cells"></i></span> SWOT Snapshot</div>
-              <div className="swot-grid">
-                {swot.strengths?.length > 0 && (
-                  <div className="swot-cell swot-s">
-                    <div className="swot-head"><i className="fa-solid fa-shield-halved"></i> Strengths</div>
-                    <ul>{swot.strengths.map((s,i) => <li key={i}>{s}</li>)}</ul>
-                  </div>
-                )}
-                {swot.weaknesses?.length > 0 && (
-                  <div className="swot-cell swot-w">
-                    <div className="swot-head"><i className="fa-solid fa-bug"></i> Weaknesses</div>
-                    <ul>{swot.weaknesses.map((w,i) => <li key={i}>{w}</li>)}</ul>
-                  </div>
-                )}
-                {swot.opportunities?.length > 0 && (
-                  <div className="swot-cell swot-o">
-                    <div className="swot-head"><i className="fa-solid fa-rocket"></i> Opportunities</div>
-                    <ul>{swot.opportunities.map((o,i) => <li key={i}>{o}</li>)}</ul>
-                  </div>
-                )}
-                {swot.threats?.length > 0 && (
-                  <div className="swot-cell swot-t">
-                    <div className="swot-head"><i className="fa-solid fa-triangle-exclamation"></i> Threats</div>
-                    <ul>{swot.threats.map((t,i) => <li key={i}>{t}</li>)}</ul>
+                {cl.differentiation_angle && (
+                  <div className="m-diff-box">
+                    <div className="m-diff-title">
+                      <i className="fa-solid fa-trophy"></i>
+                      <span>How To Stand Out &amp; Win:</span>
+                    </div>
+                    <p>{cl.differentiation_angle}</p>
                   </div>
                 )}
               </div>
-            </>
+
+              <div className="m-card">
+                <div className="m-card-header">
+                  <i className="fa-solid fa-table-cells-large"></i>
+                  <h3>SWOT Strategic Matrix</h3>
+                </div>
+                <div className="m-swot-grid">
+                  {swot.strengths?.length > 0 && (
+                    <div className="swot-box swot-s">
+                      <div className="swot-title"><i className="fa-solid fa-shield-halved"></i> Strengths</div>
+                      <ul>{swot.strengths.map((s, i) => <li key={i}>{s}</li>)}</ul>
+                    </div>
+                  )}
+                  {swot.weaknesses?.length > 0 && (
+                    <div className="swot-box swot-w">
+                      <div className="swot-title"><i className="fa-solid fa-bug"></i> Weaknesses / Traps</div>
+                      <ul>{swot.weaknesses.map((w, i) => <li key={i}>{w}</li>)}</ul>
+                    </div>
+                  )}
+                  {swot.opportunities?.length > 0 && (
+                    <div className="swot-box swot-o">
+                      <div className="swot-title"><i className="fa-solid fa-rocket"></i> Opportunities</div>
+                      <ul>{swot.opportunities.map((o, i) => <li key={i}>{o}</li>)}</ul>
+                    </div>
+                  )}
+                  {swot.threats?.length > 0 && (
+                    <div className="swot-box swot-t">
+                      <div className="swot-title"><i className="fa-solid fa-triangle-exclamation"></i> Jury Scrutiny</div>
+                      <ul>{swot.threats.map((t, i) => <li key={i}>{t}</li>)}</ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
 
-          {/* ── EVALUATOR LENS ── */}
+          {/* ── TAB 3: EVALUATOR LENS & DEFENSE ── */}
           {tab === 'evaluator' && (
-            <>
-              <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-clipboard-check"></i></span> Evaluation Scorecard</div>
-              <div className="scorecard">
-                {SC_ORDER.map(k => {
-                  const axis = sc[k];
-                  if (!axis) return null;
-                  return (
-                    <div key={k} className="score-row">
-                      <div className="score-top">
-                        <span className="score-label">{axis.label}</span>
-                        <span className={`tier-pill tp-${axis.tier.toLowerCase()}`}>{axis.tier}</span>
-                      </div>
-                      <p className="score-note">{axis.note}</p>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-gavel"></i></span> Overall Verdict</div>
-              <div className={`verdict-card ${vcClass}`}>
-                <div className="verdict-title">{VERDICT_EMOJI[verdict.tier]} {verdict.tier} Verdict</div>
-                <p>{verdict.why}</p>
-              </div>
-              <div className="v-bullets">
-                {verdict.strength && <div className="v-item v-strength"><strong>Key Strength: </strong>{verdict.strength}</div>}
-                {verdict.risk     && <div className="v-item v-risk"><strong>Main Risk: </strong>{verdict.risk}</div>}
-                {verdict.validate && <div className="v-item v-validate"><strong>Validation Check: </strong>{verdict.validate}</div>}
-              </div>
-
-              <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-circle-question"></i></span> What Evaluators Will Ask</div>
-              {qs.length > 0 ? (
-                <div className="q-list">
-                  {qs.map((q, i) => (
-                    <div key={i} className="q-item">
-                      <span className="q-num">Q{i + 1}</span>
-                      <span>{q}</span>
-                    </div>
-                  ))}
+            <div className="modal-section-grid">
+              {/* Verdict Highlight */}
+              <div className={`m-verdict-banner verdict-${vbClass}`}>
+                <div className="m-vb-left">
+                  <div className="m-vb-badge">{VERDICT_EMOJI[verdict.tier]} {verdict.tier} VERDICT</div>
+                  <p className="m-vb-why">{verdict.why}</p>
                 </div>
-              ) : (
-                <p className="p-empty">No evaluator questions listed for this PS.</p>
-              )}
-            </>
+              </div>
+
+              {/* Evaluation Scorecard */}
+              <div className="m-card">
+                <div className="m-card-header">
+                  <i className="fa-solid fa-clipboard-check"></i>
+                  <h3>Evaluation Scorecard Breakdown</h3>
+                </div>
+                <div className="m-scorecard-list">
+                  {SC_ORDER.map(k => {
+                    const axis = sc[k];
+                    if (!axis) return null;
+                    return (
+                      <div key={k} className="m-score-item">
+                        <div className="m-score-top">
+                          <span className="m-score-axis">{axis.label}</span>
+                          <span className={`tier-pill tp-${axis.tier.toLowerCase()}`}>{axis.tier}</span>
+                        </div>
+                        <p className="m-score-desc">{axis.note}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Evaluator Questions */}
+              <div className="m-card">
+                <div className="m-card-header text-primary">
+                  <i className="fa-solid fa-person-chalkboard"></i>
+                  <h3>Tough Questions the Jury Will Ask &amp; How to Prepare</h3>
+                </div>
+                {qs.length > 0 ? (
+                  <div className="m-q-grid">
+                    {qs.map((q, i) => (
+                      <div key={i} className="m-q-card">
+                        <div className="m-q-num">Q{i + 1}</div>
+                        <p className="m-q-text">{q}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted">No evaluator questions listed for this statement.</p>
+                )}
+              </div>
+            </div>
           )}
 
-          {/* ── 36-HR PLAN ── */}
+          {/* ── TAB 4: 36-HOUR BLUEPRINT ── */}
           {tab === 'plan' && (
-            <>
-              <div className="p-heading"><span className="p-ico"><i className="fa-solid fa-stopwatch"></i></span> 36-Hour Execution Plan</div>
-              <div className="plan-list">
+            <div className="modal-section-grid">
+              <div className="m-card m-card-accent">
+                <div className="m-card-header">
+                  <i className="fa-solid fa-stopwatch"></i>
+                  <h3>36-Hour Hackathon Execution Roadmap</h3>
+                </div>
+                <p className="m-card-lead">
+                  Disciplined milestone scheduling designed by CSI mentors to take your solution from zero to a winning demo.
+                </p>
+              </div>
+
+              <div className="m-timeline">
                 {[
-                  { stage: plan.stage_idea,        num: '01' },
-                  { stage: plan.stage_prototype,   num: '02' },
-                  { stage: plan.stage_integration, num: '03' },
-                  { stage: plan.stage_polish,      num: '04' }
-                ].map(({ stage, num }) => {
+                  { stage: plan.stage_idea,        num: '01', hours: '0 – 4h', color: '#60a5fa' },
+                  { stage: plan.stage_prototype,   num: '02', hours: '4 – 22h', color: '#38bdf8' },
+                  { stage: plan.stage_integration, num: '03', hours: '22 – 30h', color: '#818cf8' },
+                  { stage: plan.stage_polish,      num: '04', hours: '30 – 36h', color: '#4ade80' }
+                ].map(({ stage, num, hours, color }) => {
                   if (!stage) return null;
                   return (
-                    <div key={num} className="plan-phase">
-                      <div className="plan-head">
-                        <span className="plan-num">{num}</span>
-                        <h4>{stage.label}</h4>
+                    <div key={num} className="m-timeline-phase">
+                      <div className="m-phase-badge" style={{ borderColor: color, color }}>
+                        <span className="m-phase-num">{num}</span>
+                        <span className="m-phase-hours">{hours}</span>
                       </div>
-                      <ul>
-                        {(stage.items || []).map((item, idx) => (
-                          <li key={idx}><i className="fa-solid fa-angle-right"></i><span>{item}</span></li>
-                        ))}
-                      </ul>
+                      <div className="m-phase-content">
+                        <h4 className="m-phase-title">{stage.label}</h4>
+                        <ul className="m-phase-tasks">
+                          {(stage.items || []).map((item, idx) => (
+                            <li key={idx}>
+                              <i className="fa-solid fa-arrow-right"></i>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   );
                 })}
               </div>
-            </>
+            </div>
           )}
 
         </div>
