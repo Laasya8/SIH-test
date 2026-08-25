@@ -748,8 +748,25 @@ body::before {
 }
 
 .filter-drawer.open {
-  max-height: 240px;
+  max-height: 340px;
   padding: 14px 0 6px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.25) transparent;
+}
+
+.filter-drawer.open::-webkit-scrollbar {
+  width: 4px;
+}
+
+.filter-drawer.open::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.filter-drawer.open::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.25);
+  border-radius: 4px;
 }
 
 .filter-grid {
@@ -1265,10 +1282,18 @@ body::before {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+
+.modal-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .modal-tab-btn {
-  flex: 1;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1308,6 +1333,21 @@ body::before {
   padding: 24px 28px 36px;
   overflow-y: auto;
   flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.25) transparent;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.25);
+  border-radius: 4px;
 }
 
 .modal-section-grid {
@@ -1358,6 +1398,7 @@ body::before {
   color: var(--txt-2);
   line-height: 1.6;
   margin: 0;
+  white-space: pre-line;
 }
 
 .m-card-accent {
@@ -1910,17 +1951,32 @@ body::before {
     display: flex;
   }
 
+  /* Hide "Explore All 226 PS" CTA in header on mobile — saves space */
+  .header-actions .btn {
+    display: none;
+  }
+
   .ws-inner {
     grid-template-columns: 1fr;
   }
 
+  .workshop-card {
+    padding: 24px 20px;
+  }
+
   .ws-poster-placeholder {
-    max-height: 220px;
+    max-height: 200px;
   }
 
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 28px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 
   .panel {
@@ -1951,5 +2007,121 @@ body::before {
 
   .stat-cell:last-child {
     border-bottom: none;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Hero */
+  .hero-section {
+    padding: 48px 0 56px;
+  }
+
+  .hero-stats-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+  }
+
+  .hstat-divider {
+    display: none;
+  }
+
+  .hstat {
+    padding: 16px 0;
+    min-width: 50%;
+    max-width: 50%;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+
+  /* Stats at flex positions 5 & 7 (bottom row) — no bottom border */
+  .hstat:nth-child(n+5) {
+    border-bottom: none;
+  }
+
+  /* Stats at flex positions 3 & 7 (right column) — left border */
+  .hstat:nth-child(3),
+  .hstat:nth-child(7) {
+    border-left: 1px solid var(--border);
+  }
+
+  /* Toolbar search */
+  .search-wrap {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .search-row {
+    flex-direction: column;
+  }
+
+  .ctrl-select,
+  .filter-btn {
+    width: 100%;
+  }
+
+  /* Section title sizing */
+  .section-title {
+    font-size: 21px;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .modal-dialog {
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 18px 18px 0 0;
+  }
+
+  .modal-header {
+    padding: 18px 18px 14px;
+  }
+
+  .modal-body {
+    padding: 16px 18px 28px;
+  }
+
+  .modal-tabs {
+    gap: 3px;
+    padding: 3px;
+  }
+
+  .modal-tab-btn {
+    padding: 7px 10px;
+    font-size: 11px;
+  }
+
+  .modal-tab-btn i {
+    display: none;
+  }
+
+  /* Collapse 2-col grids to 1-col */
+  .m-two-col,
+  .m-swot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Workshop card */
+  .workshop-card {
+    padding: 20px 16px;
+  }
+
+  .ws-actions {
+    flex-direction: column;
+  }
+
+  .ws-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Footer logo */
+  .footer-tagline {
+    max-width: 100%;
   }
 }

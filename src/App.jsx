@@ -9,7 +9,7 @@ import DetailModal from './components/DetailModal.jsx';
 import Footer from './components/Footer.jsx';
 import { SIH_DATA } from './data/sihData.js';
 
-const PAGE_SIZE = 24;
+const PAGE_SIZE = 9;
 
 function parseIdeas(str) {
   if (!str) return 0;
