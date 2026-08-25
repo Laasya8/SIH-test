@@ -117,18 +117,21 @@ body::before {
    NAVBAR — Seamless Blue Blend
 ─────────────────────────────── */
 .site-header {
-  position: sticky;
-  top: 3px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 1000;
   height: var(--nav-h);
   display: flex;
   align-items: center;
-  /* Matches the oceanic blue bg — no jarring black bar */
-  background: rgba(10, 22, 48, 0.75);
+  background: rgba(10, 22, 48, 0.88);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
-  border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-  transition: background 0.3s;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+  box-shadow: 0 4px 20px rgba(2, 8, 20, 0.4);
+  transition: background 0.3s, box-shadow 0.3s;
 }
 
 .header-inner {
@@ -151,6 +154,38 @@ body::before {
 .logo-wrap:hover {
   transform: scale(1.02);
   opacity: 0.95;
+}
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-vnr {
+  height: 38px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+  display: block;
+}
+
+.logo-divider {
+  width: 1.5px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 2px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.logo-csi {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+  display: block;
 }
 
 .logo-img {
@@ -455,20 +490,28 @@ body::before {
 }
 
 /* ──────────────────────────────
-   GUIDANCE SESSION BANNER
+   GUIDANCE SESSION BANNER (HIGHLIGHTED)
 ─────────────────────────────── */
 .workshop-section {
-  padding: 24px 0 44px;
+  padding: 28px 0 48px;
 }
 
 .workshop-card {
-  background: rgba(11, 23, 44, 0.85);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(14, 30, 60, 0.92) 0%, rgba(10, 22, 45, 0.96) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(59, 130, 246, 0.35);
   border-radius: var(--r-xl);
-  padding: 38px 42px;
+  padding: 40px 44px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 10px 40px -10px rgba(37, 99, 235, 0.35), 0 0 0 1px rgba(96, 165, 250, 0.15) inset;
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+
+.workshop-card:hover {
+  border-color: rgba(96, 165, 250, 0.55);
+  box-shadow: 0 16px 50px -10px rgba(37, 99, 235, 0.45), 0 0 30px rgba(56, 189, 248, 0.2);
 }
 
 .workshop-card::before {
@@ -477,8 +520,20 @@ body::before {
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 40%, #38bdf8 100%);
+  height: 4px;
+  background: linear-gradient(90deg, #1d4ed8 0%, #38bdf8 50%, #60a5fa 100%);
+}
+
+.ws-glow-backdrop {
+  position: absolute;
+  top: -100px;
+  right: -50px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, rgba(56, 189, 248, 0.08) 60%, transparent 80%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(40px);
 }
 
 .ws-tags {
@@ -486,23 +541,31 @@ body::before {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .ws-tag {
   font-size: 11.5px;
   font-weight: 600;
-  padding: 4px 12px;
+  padding: 5px 13px;
   border-radius: var(--r-full);
   border: 1px solid var(--border);
   background: var(--bg-1);
   color: var(--txt-2);
 }
 
+.ws-tag.featured {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(245, 158, 11, 0.25));
+  color: #fde047;
+  border-color: rgba(234, 179, 8, 0.45);
+  box-shadow: 0 0 12px rgba(234, 179, 8, 0.25);
+  font-weight: 700;
+}
+
 .ws-tag.live {
-  background: rgba(34, 197, 94, 0.12);
+  background: rgba(34, 197, 94, 0.14);
   color: #4ade80;
-  border-color: rgba(34, 197, 94, 0.25);
+  border-color: rgba(34, 197, 94, 0.35);
 }
 
 .ws-tag.live::before {
@@ -510,20 +573,37 @@ body::before {
   font-size: 8px;
 }
 
+.ws-tag.tag-free {
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.3);
+  font-weight: 700;
+}
+
 .ws-inner {
   display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 40px;
+  grid-template-columns: 1fr 320px;
+  gap: 36px;
   align-items: center;
 }
 
 .ws-body h2 {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 25px;
+  font-size: 26px;
   font-weight: 800;
   color: var(--txt-1);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   line-height: 1.3;
+  letter-spacing: -0.3px;
+}
+
+.ws-badge-sub {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--cyan-accent);
+  margin-top: 4px;
+  letter-spacing: 0.2px;
 }
 
 .ws-body p {
@@ -531,14 +611,14 @@ body::before {
   color: var(--txt-2);
   margin-bottom: 20px;
   line-height: 1.65;
-  max-width: 580px;
+  max-width: 620px;
 }
 
 .ws-points {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 28px;
 }
 
@@ -546,73 +626,112 @@ body::before {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  font-size: 14.5px;
+  font-size: 14px;
   color: var(--txt-1);
-  font-weight: 500;
+  font-weight: 450;
   line-height: 1.5;
 }
 
 .ws-points li i {
-  color: var(--blue-light);
-  margin-top: 4px;
+  color: var(--cyan-accent);
+  margin-top: 3px;
   flex-shrink: 0;
-  font-size: 14px;
+  font-size: 15px;
+}
+
+.ws-points li b {
+  color: #ffffff;
 }
 
 .ws-actions {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
-/* Poster placeholder — A3 Landscape (420:297) */
-.ws-poster-placeholder {
+.btn-glow-action {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border: 1px solid rgba(147, 197, 253, 0.4);
+  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.45);
+}
+
+.btn-glow-action:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  box-shadow: 0 6px 24px rgba(37, 99, 235, 0.65);
+  transform: translateY(-2px);
+}
+
+.ws-poster-box {
   width: 100%;
-  aspect-ratio: 420 / 297;
-  max-height: 300px;
+  aspect-ratio: 4/3;
+  max-height: 280px;
   border-radius: var(--r-lg);
-  border: 2px dashed rgba(59, 130, 246, 0.35);
-  background: var(--bg-1);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  background: radial-gradient(circle at 50% 20%, rgba(37, 99, 235, 0.2), rgba(11, 23, 44, 0.95) 75%);
+  box-shadow: 0 8px 30px rgba(2, 8, 20, 0.5) inset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.ws-poster-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(56, 189, 248, 0.1) 100%);
+  pointer-events: none;
+}
+
+.ws-poster-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  color: var(--txt-3);
-  text-align: center;
-  padding: 20px;
-  transition: border-color 0.2s, background 0.2s;
 }
 
-.ws-poster-placeholder:hover {
-  border-color: rgba(96, 165, 250, 0.6);
-  background: var(--bg-2);
+.ws-poster-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: rgba(37, 99, 235, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: var(--cyan-accent);
+  margin-bottom: 4px;
+  box-shadow: 0 0 16px rgba(37, 99, 235, 0.35);
 }
 
-.ws-poster-placeholder i {
-  font-size: 36px;
-  color: rgba(96, 165, 250, 0.45);
-}
-
-.ws-poster-placeholder p {
-  font-size: 14px;
+.ws-poster-inner h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
   font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.ws-poster-inner p {
+  font-size: 12.5px;
   color: var(--txt-2);
   margin: 0;
 }
 
-.ws-poster-placeholder span {
+.ws-poster-pill {
   font-size: 11px;
-  color: var(--txt-3);
-}
-
-.ws-poster-placeholder code {
-  font-family: 'Space Grotesk', monospace;
-  background: var(--bg-2);
-  padding: 2px 6px;
-  border-radius: 4px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  background: rgba(37, 99, 235, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
   color: var(--blue-light);
-  font-size: 10.5px;
+  margin-top: 6px;
 }
 
 /* ──────────────────────────────
@@ -2124,4 +2243,8 @@ body::before {
   .footer-tagline {
     max-width: 100%;
   }
+}
+
+main {
+  padding-top: var(--nav-h);
 }

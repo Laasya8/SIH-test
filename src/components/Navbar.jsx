@@ -16,14 +16,27 @@ export default function Navbar({ activeSection, onNavigate }) {
       <div className="container">
         <div className="header-inner">
 
-          {/* Logo */}
+          {/* VNR & CSI Logos — Centered & Optically Aligned */}
           <a
             href="#home"
             className="logo-wrap"
             onClick={(e) => { e.preventDefault(); go('home'); }}
             title="CSI VNRVJIET"
+            aria-label="CSI VNRVJIET Home"
           >
-            <img src="/csilogo.png" alt="CSI VNRVJIET" className="logo-img" />
+            <div className="logo-group">
+              <img
+                src="/VNRVJIET_White_Text.webp"
+                alt="VNR VJIET"
+                className="logo-vnr"
+              />
+              <span className="logo-divider" aria-hidden="true" />
+              <img
+                src="/csilogo.png"
+                alt="CSI VNRVJIET"
+                className="logo-csi"
+              />
+            </div>
           </a>
 
           {/* Desktop nav */}
@@ -47,9 +60,9 @@ export default function Navbar({ activeSection, onNavigate }) {
             <button
               type="button"
               className="btn btn-primary btn-sm"
-              onClick={() => go('toolbarSection')}
+              onClick={() => go('workshopSection')}
             >
-              Explore All 226 PS
+              Register
             </button>
             <button
               type="button"
@@ -79,6 +92,16 @@ export default function Navbar({ activeSection, onNavigate }) {
                 </button>
               </li>
             ))}
+            <li key="mobile-register">
+              <button
+                type="button"
+                className="mobile-nav-btn"
+                style={{ background: 'var(--blue-primary)', color: '#fff', textAlign: 'center', marginTop: '4px' }}
+                onClick={() => go('workshopSection')}
+              >
+                Register
+              </button>
+            </li>
           </ul>
         </div>
       )}
