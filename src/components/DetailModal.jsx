@@ -71,9 +71,7 @@ export default function DetailModal({ ps, onClose }) {
             <span className={`modal-verdict-pill verdict-${vbClass}`}>
               {VERDICT_EMOJI[verdict.tier]} {VERDICT_LABEL[verdict.tier] || verdict.tier}
             </span>
-            <span className="modal-csi-badge">
-              <i className="fa-solid fa-award"></i> CSI Mentorship Analysis
-            </span>
+
           </div>
 
           <h2 className="modal-title">{ps.title}</h2>
